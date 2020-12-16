@@ -9,13 +9,19 @@ import App from './App';
 import {name as appName} from './app.json';
 
 import artikelReducer from './store/reducer/artikel';
+import displayReducer from './store/reducer/display';
+
+import {artikelListener} from './store/saga';
 
 const rootReducer = combineReducers({
   artikel: artikelReducer,
+  display: displayReducer,
 });
 
 const sagaMiddleware = createMiddlewareSaga();
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
+
+sagaMiddleware.run(artikelListener);
 
 const Index = () => {
   return (

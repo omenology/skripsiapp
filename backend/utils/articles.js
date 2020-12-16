@@ -15,10 +15,10 @@ module.exports = async (url) => {
       const pengantar = $(el).find("div.cb-excerpt").text();
       const penulis = $(el).find(".cb-author").text();
       const penulisLink = $(el).find(".cb-author a").attr("href").slice(BASE_URL.length);
-      const tanggal = $(el).find(".cb-date").text();
+      const tanggal = $(el).find(".cb-byline .cb-date").text();
       const link = $(el).find("h2.cb-post-title a").attr("href").slice(BASE_URL.length);
 
-      data.push({ judul, gambar, pengantar, penulis, penulisLink, tanggal: new Date(tanggal), link });
+      data.push({ judul, gambar, pengantar, penulis, penulisLink, tanggal, link });
     });
 
   return data;

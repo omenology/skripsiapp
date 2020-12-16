@@ -74,6 +74,11 @@
 		<string>rubicon-icon-font.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
+		<string>NotoSans-Bold.ttf</string>
+		<string>NotoSans-BoldItalic.ttf</string>
+		<string>NotoSans-Italic.ttf</string>
+		<string>NotoSans-Regular.ttf</string>
+		<string>RobotoMono-VariableFont_wght.ttf</string>
 	</array>
 </dict>
 </plist>

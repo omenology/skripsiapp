@@ -1,8 +1,9 @@
 import * as actionTypes from './actionTypes';
 
-export const getArtikelTerbaru = () => {
+export const getArtikelTerbaru = (page = 1) => {
   return {
     type: actionTypes.GET_ARTIKEL_TERBARU,
+    page,
   };
 };
 

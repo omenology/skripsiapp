@@ -85,7 +85,7 @@ module.exports = {
           judul,
           penulis,
           penulisLink,
-          tanggal: new Date(tanggal),
+          tanggal,
           pargraph,
         },
       });
@@ -113,6 +113,23 @@ module.exports = {
           },
           artikel: data,
         },
+      });
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+    }
+  },
+  cari: async (req, res) => {
+    const url = req.header("url");
+    try {
+      const page = req.query.page || 1;
+      const cari = req.query.s || "";
+
+      const data = await articles(`page/${page}/?s=${cari}`);
+
+      res.status(200).send({
+        meta: null,
+        data,
       });
     } catch (error) {
       console.log(error);
