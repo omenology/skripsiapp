@@ -68,6 +68,7 @@ module.exports = {
       const response = await axios.get(url);
       const $ = cheerio.load(response.data);
       const judul = $("h1.entry-title.cb-entry-title.entry-title.cb-title").text();
+      const gambar = $("#cb-featured-image .cb-mask img").attr("srcset").split(" ")[0];
       const penulis = $(".cb-author.author .fn a").children().remove().end().text();
       const penulisLink = $(".cb-author.author .fn a").attr("href").slice(BASE_URL.length);
       const tanggal = $(".cb-entry-header .cb-byline span.cb-date time").text();
@@ -82,6 +83,7 @@ module.exports = {
       res.status(200).send({
         meta: null,
         data: {
+          gambar: gambar,
           judul,
           penulis,
           penulisLink,
@@ -101,7 +103,7 @@ module.exports = {
       const response = await axios.get(url);
       const $ = cheerio.load(response.data);
       const nama = $(".cb-author-details .cb-meta a").text();
-      const imgUrl = $(".cb-author-details .cb-mask img").attr("data-lazy-src");
+      const imgUrl = $(".cb-author-details .cb-mask img").attr("src");
       const data = await articles(`${url}page/${page}`);
 
       res.status(200).send({

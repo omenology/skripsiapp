@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-  title: '',
+  title: 'Terbaru',
 };
 
 const reducer = (state = initialState, action) => {

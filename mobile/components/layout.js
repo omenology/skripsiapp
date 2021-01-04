@@ -18,7 +18,7 @@ export default (props) => {
   const navigation = useNavigation();
   return (
     <Container>
-      <Header>
+      <Header style={{backgroundColor: '#122942'}}>
         <Left>
           <Button
             transparent

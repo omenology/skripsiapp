@@ -1,9 +1,8 @@
 import React from 'react';
 
-import {Grid, Row, Col} from 'react-native-easy-grid';
-import {Text, View} from 'native-base';
+import {Text, View, Content} from 'native-base';
 
-import {Dimensions, Image} from 'react-native';
+import {Image, TouchableHighlight} from 'react-native';
 
 import useDetailArtikel from '../utils/detailArtikel';
 
@@ -12,48 +11,61 @@ import LoadingArtikel from '../components/loadingArtikel';
 
 //const {width} = Dimensions.get('window');
 
-export default ({route}) => {
+export default ({route, navigation}) => {
   const {url} = route.params;
   const [data, loading, error] = useDetailArtikel(url);
-  console.log(loading, data, '=======================');
-  //console.log('render', loading, data?.judul);
+
   return (
     <Layout title="Detail Artikel">
       {!loading ? (
-        <Grid style={{padding: 5}}>
-          <Row style={{overflow: 'scroll'}}>
-            <Col>
-              <Image
-                style={{height: 270}}
-                source={{
-                  uri:
-                    'https://i1.wp.com/mojok.co/wp-content/uploads/2018/07/esai-suka-duka-kerja-dalam-dunia-startup-mojok.jpg?resize=759%2C500&ssl=1',
-                }}
-              />
-              <Text style={{fontWeight: 'bold', fontSize: 20}}>
-                {data.judul}
-              </Text>
+        <Content scrollEnabled style={{padding: 10, flex: 1}}>
+          <View>
+            <Image
+              style={{height: 270}}
+              source={{
+                uri:
+                  data.gambar ||
+                  'https://i1.wp.com/mojok.co/wp-content/uploads/2018/07/esai-suka-duka-kerja-dalam-dunia-startup-mojok.jpg?resize=759%2C500&ssl=1',
+              }}
+            />
+            <Text
+              style={{fontWeight: 'bold', fontSize: 20, marginVertical: 10}}>
+              {data.judul}
+            </Text>
+            <View style={{display: 'flex', flexDirection: 'row'}}>
+              <TouchableHighlight
+                onPress={() =>
+                  navigation.navigate('penulis', {link: data.penulisLink})
+                }>
+                <Text
+                  style={{
+                    fontFamily: 'RobotoMono-VariableFont_wght',
+                    fontWeight: 'bold',
+                    color: 'darkgrey',
+                  }}>
+                  {data.penulis}
+                </Text>
+              </TouchableHighlight>
               <Text
                 style={{
                   fontFamily: 'RobotoMono-VariableFont_wght',
-                  fontWeight: '300',
-                  marginVertical: 5,
+                  fontWeight: 'bold',
+                  color: 'darkgrey',
+                  marginBottom: 10,
                 }}>
-                {data.penulis} x {data.tanggal}
+                {' '}
+                x {data.tanggal}
               </Text>
-              {data.pargraph.map((val, index) => {
-                return (
-                  <Text key={index} style={{marginBottom: 5}}>
-                    {val}
-                  </Text>
-                );
-              })}
-            </Col>
-          </Row>
-          <Row>
-            <Col></Col>
-          </Row>
-        </Grid>
+            </View>
+            {data.pargraph.map((val, index) => {
+              return (
+                <Text key={index} style={{marginBottom: 7}}>
+                  {val}
+                </Text>
+              );
+            })}
+          </View>
+        </Content>
       ) : (
         <LoadingArtikel />
       )}

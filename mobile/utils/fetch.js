@@ -9,11 +9,7 @@ export default (url) => {
   useEffect(() => {
     const fetchData = () => {
       axios
-        .get('artikel/detail', {
-          headers: {
-            url,
-          },
-        })
+        .get(url)
         .then((response) => {
           setData(response.data.data);
         })
@@ -27,11 +23,6 @@ export default (url) => {
         });
     };
     fetchData();
-    return () => {
-      setData(null);
-      setError(null);
-      setLoading(true);
-    };
   }, [url]);
 
   return [data, loading, error];

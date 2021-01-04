@@ -8,14 +8,22 @@ import {
 } from '@react-navigation/drawer';
 
 import {Item, Input, List, ListItem, View} from 'native-base';
-import {ImageBackground, Text, StyleSheet} from 'react-native';
+import {Image, Text, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {axios} from './utils/conection';
-import {setTitle} from './store/actions';
+import {
+  setTitle,
+  getArtikelTerbaru,
+  getArtikelKategori,
+  getArtikelCari,
+} from './store/actions';
 
 import Main from './screen/main';
+import ArtikelPenulis from './screen/artikelPenulis';
 import DetailArtikel from './screen/detailArtikel';
+import Disclaimer from './screen/disclaimer';
+import About from './screen/about';
 
 const Drawer = createDrawerNavigator();
 
@@ -32,34 +40,42 @@ function CustomDrawerContent(props) {
   const dispatch = useDispatch();
   const [focused, setFocused] = useState('terbaru');
   const [menuItem, setMenuItem] = useState([]);
-  const [categoryActive, setCategotyActive] = useState(true);
+  const [categoryActive, setCategotyActive] = useState(false);
 
   const setTitleHandler = (title) => dispatch(setTitle(title));
+  const getArtikelKategoriHandler = (page, url, judul) =>
+    dispatch(getArtikelKategori(page, url, judul));
+  const getArtikelTerbaruHandler = (page) => dispatch(getArtikelTerbaru(page));
+  const getArtikelCariHandler = (page, keyword) =>
+    dispatch(getArtikelCari(page, keyword));
 
   useEffect(() => {
     axios
       .get('/info/menu-item')
       .then((response) => {
         setMenuItem(response.data.data);
+        setCategotyActive(true);
       })
       .catch((err) => {
         console.log(err, 'kkk');
-        //setError('somethings error');
       });
   }, []);
 
   return (
     <Fragment>
-      <ImageBackground
-        source={require('./assets/bglogin2.png')}
+      <View
         style={{
           width: '100%',
           height: 150,
           justifyContent: 'center',
           alignItems: 'center',
+          backgroundColor: '#122942',
         }}>
-        <Text style={{color: 'white', fontSize: 24}}>M o j o k . C o</Text>
-      </ImageBackground>
+        <Image
+          source={require('./assets/icon.png')}
+          style={{width: 100, height: 100}}
+        />
+      </View>
       <Item
         style={{
           marginVertical: 10,
@@ -72,8 +88,13 @@ function CustomDrawerContent(props) {
           borderRadius: 5,
         }}>
         <Input
-          onEndEditing={() => {
+          onEndEditing={(e) => {
             setTitleHandler('Hasil Pencarian');
+            let keyword = e.nativeEvent.text || '';
+            props.setGetArtikel(() => (page) =>
+              getArtikelCariHandler(page, keyword),
+            );
+            props.navigation.closeDrawer();
           }}
           placeholder="Cari Artikel...."
         />
@@ -89,6 +110,8 @@ function CustomDrawerContent(props) {
             setFocused('terbaru');
             setTitleHandler('Terbaru');
             props.navigation.navigate('terbaru');
+            props.navigation.closeDrawer();
+            props.setGetArtikel(() => (page) => getArtikelTerbaruHandler(page));
           }}
         />
 
@@ -117,8 +140,12 @@ function CustomDrawerContent(props) {
                     focused == val.judul ? style.active : null,
                   ]}
                   onPress={() => {
-                    setTitleHandler(val.judul);
                     setFocused(val.judul);
+                    props.navigation.navigate('terbaru');
+                    props.navigation.closeDrawer();
+                    props.setGetArtikel(() => (page) =>
+                      getArtikelKategoriHandler(page, val.link, val.judul),
+                    );
                   }}>
                   <Text>{val.judul}</Text>
                 </ListItem>
@@ -134,6 +161,7 @@ function CustomDrawerContent(props) {
           onPress={() => {
             setFocused('disclaimer');
             props.navigation.navigate('disclaimer');
+            props.navigation.closeDrawer();
           }}
         />
 
@@ -144,6 +172,7 @@ function CustomDrawerContent(props) {
           onPress={() => {
             setFocused('about');
             props.navigation.navigate('about');
+            props.navigation.closeDrawer();
           }}
         />
       </DrawerContentScrollView>
@@ -163,13 +192,25 @@ function CustomDrawerContent(props) {
 }
 
 export default () => {
+  const dispatch = useDispatch();
+  const getArtikelTerbaruHandler = (page) => dispatch(getArtikelTerbaru(page));
+  const [getArtikel, setGetArtikel] = useState(() => (page) =>
+    getArtikelTerbaruHandler(page),
+  );
+
+  let MainScreen = (props) => <Main getArtikel={getArtikel} />;
   return (
     <NavigationContainer>
       <Drawer.Navigator
         initialRouteName="terbaru"
-        drawerContent={(props) => <CustomDrawerContent {...props} />}>
-        <Drawer.Screen name="terbaru" component={Main} />
+        drawerContent={(props) => (
+          <CustomDrawerContent setGetArtikel={setGetArtikel} {...props} />
+        )}>
+        <Drawer.Screen name="terbaru" component={MainScreen} />
+        <Drawer.Screen name="penulis" component={ArtikelPenulis} />
         <Drawer.Screen name="detail" component={DetailArtikel} />
+        <Drawer.Screen name="disclaimer" component={Disclaimer} />
+        <Drawer.Screen name="about" component={About} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
