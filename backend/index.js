@@ -9,6 +9,6 @@ app.use("*", (req, res) => {
   res.status(404).send("Endpoint Not Found");
 });
 
-app.listen(4000, "192.168.0.29", () => {
-  console.log(`Service start on host : 192.168.0.29 and port : 4000`);
+app.listen(4000, "localhost", () => {
+  console.log(`Service start on host : 192.168.0.28 and port : 4000`);
 });
